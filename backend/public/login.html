@@ -166,7 +166,7 @@
 <div class="hint-badge">✦ Ambient UI — always alive</div>
 
 <script>
-const API="http://localhost:5000/api";
+const API="/api";
 if(localStorage.getItem("token"))location.href="index.html";
 // Show error if redirected back from Google with error
 (()=>{
@@ -317,7 +317,7 @@ setTimeout(type,600);
 // ── Auth ──
 function googleSignIn(){
   // Redirect to backend Google OAuth
-  window.location.href = 'http://localhost:5000/api/auth/google';
+  window.location.href = '/api/auth/google';
 }
 document.addEventListener("keydown",e=>{if(e.key==="Enter")login();});
 async function login(){
