@@ -1622,15 +1622,53 @@ async function fetchTodos(){
 }
 
 async function addTodo(){
-  const inp=document.getElementById("taskInput");const title=inp.value.trim();
-  if(!title){showToast("Please type a task!","err");inp.focus();return;}
-  const pri=document.getElementById("priSel").value,cat=document.getElementById("catSel").value,due=document.getElementById("dueDateInp").value;
-  const btn=document.getElementById("addBtn");btn.disabled=true;
- try{const r=await fetch(API + "/todos",{method:"POST",headers:hdrs(),body:JSON.stringify({title,priority:pri,category:cat,dueDate:due||null})});
-    if(d.success){inp.value="";document.getElementById("dueDateInp").value="";showAddPop(title);playAdd();addXP(5);fetchTodos();}else showToast(d.message||"Failed","err");
-  }catch{showToast("Server error","err");}finally{btn.disabled=false;}
-}
+  const inp = document.getElementById("taskInput");
+  const title = inp.value.trim();
 
+  if(!title){
+    showToast("Please type a task!","err");
+    inp.focus();
+    return;
+  }
+
+  const pri = document.getElementById("priSel").value;
+  const cat = document.getElementById("catSel").value;
+  const due = document.getElementById("dueDateInp").value;
+  const btn = document.getElementById("addBtn");
+
+  btn.disabled = true;
+
+  try{
+    const r = await fetch(API + "/todos",{
+      method:"POST",
+      headers:hdrs(),
+      body:JSON.stringify({
+        title,
+        priority:pri,
+        category:cat,
+        dueDate:due || null
+      })
+    });
+
+    const d = await r.json();   // 🔥 IMPORTANT
+
+    if(r.ok){
+      inp.value="";
+      document.getElementById("dueDateInp").value="";
+      showAddPop(title);
+      playAdd();
+      addXP(5);
+      fetchTodos();
+    } else {
+      showToast(d.message || "Failed","err");
+    }
+
+  } catch(e){
+    showToast("Server error","err");
+  } finally {
+    btn.disabled = false;
+  }
+}
 async function toggleTodo(id,cur,cardEl){
   if(!cur){
     cardEl.classList.add("completing");
