@@ -1680,7 +1680,7 @@ async function toggleTodo(id, cur, cardEl) {
 
     setTimeout(async () => {
       try {
-        const r = await fetch(`/tasks/${id}`, {
+        const r = await fetch(`/api/todos/${id}`, {
           method: "PUT",
           headers: hdrs(),
           body: JSON.stringify({ completed: true })
@@ -1709,7 +1709,7 @@ async function toggleTodo(id, cur, cardEl) {
 
   } else {
     try {
-      const r = await fetch(`/tasks/${id}`, {
+      const r = await fetch(`/api/todos/${id}`,{
         method: "PUT",
         headers: hdrs(),
         body: JSON.stringify({ completed: false })
