@@ -1726,8 +1726,40 @@ async function toggleTodo(id, cur, cardEl) {
   }
 }
 
-function deleteTodo(id,cardEl){pendingDelId=id;pendingDelCard=cardEl;showOverlay("delOverlay");document.getElementById("delConfirmBtn").onclick=confirmDelete;}
-async function confirmDelete(){if(!pendingDelId)return;closeOverlay("delOverlay");pendingDelCard.classList.add("removing");setTimeout(async()=>{try{const r=await fetch(`${API}/${pendingDelId}`,{method:"DELETE",headers:hdrs()});if(r.status===401){logout();return;}const d=await r.json();if(d.success){showToast("🗑 Deleted","ok");fetchTodos();}}catch{showToast("Error","err");}},400);}
+function deleteTodo(id, cardEl) {
+  pendingDelId = id;
+  pendingDelCard = cardEl;
+  showOverlay("delOverlay");
+  document.getElementById("delConfirmBtn").onclick = confirmDelete;
+}
+
+async function confirmDelete() {
+  if (!pendingDelId) return;
+
+  closeOverlay("delOverlay");
+  pendingDelCard.classList.add("removing");
+
+  setTimeout(async () => {
+    try {
+      const r = await fetch(`/api/todos/${pendingDelId}`, {
+        method: "DELETE",
+        headers: hdrs()
+      });
+
+      if (r.status === 401) { logout(); return; }
+
+      const d = await r.json();
+
+      if (d.success) {
+        showToast("🗑 Deleted", "ok");
+        fetchTodos();
+      }
+
+    } catch {
+      showToast("Error", "err");
+    }
+  }, 400);
+}
 
 function editTodo(id,titleEl){titleEl.contentEditable="true";titleEl.focus();const range=document.createRange();range.selectNodeContents(titleEl);window.getSelection().removeAllRanges();window.getSelection().addRange(range);
   async function save(){titleEl.contentEditable="false";const nt=titleEl.textContent.trim();if(!nt){titleEl.textContent=allTodos.find(t=>t._id===id)?.title||"";return;}try{const r=await fetch(`${API}/${id}`,{method:"PUT",headers:hdrs(),body:JSON.stringify({title:nt})});const d=await r.json();if(d.success){showToast("✏️ Saved","ok");fetchTodos();}}catch{showToast("Error","err");}}
