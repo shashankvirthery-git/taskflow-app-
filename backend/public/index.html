@@ -1187,7 +1187,7 @@
 </div>
 
 <script>
-const API="http://localhost:5000/api/todos";
+const API="/api";
 const token=localStorage.getItem("token");
 if(!token)location.href="login.html";
 document.getElementById("uname").textContent=localStorage.getItem("userName")||"User";
@@ -1616,7 +1616,7 @@ function showCompletePopup(){const m=COMP[Math.floor(Math.random()*COMP.length)]
 // ── CRUD ──
 async function fetchTodos(){
   document.getElementById("loader").classList.add("on");
-  try{const r=await fetch(API,{headers:hdrs()});if(r.status===401){logout();return;}const d=await r.json();
+ try{const r=await fetch(API + "/todos",{headers:hdrs()});if(r.status===401){logout();return;}const d=await r.json();
     if(d.success){allTodos=d.data;render();updateStats();updateChallenge(countTodayDone());checkAchs();updateShareStats();renderLeaderboard();updateAnalytics();if(focusMode){const p=allTodos.filter(t=>!t.completed);document.getElementById("focusCurrentTask").textContent=p.length>0?p[0].title:"All done!";}}
   }catch{showToast("⚠ Cannot connect","err");}finally{document.getElementById("loader").classList.remove("on");}
 }
@@ -1626,7 +1626,7 @@ async function addTodo(){
   if(!title){showToast("Please type a task!","err");inp.focus();return;}
   const pri=document.getElementById("priSel").value,cat=document.getElementById("catSel").value,due=document.getElementById("dueDateInp").value;
   const btn=document.getElementById("addBtn");btn.disabled=true;
-  try{const r=await fetch(API,{method:"POST",headers:hdrs(),body:JSON.stringify({title,priority:pri,category:cat,dueDate:due||null})});if(r.status===401){logout();return;}const d=await r.json();
+ try{const r=await fetch(API + "/todos",{method:"POST",headers:hdrs(),body:JSON.stringify({title,priority:pri,category:cat,dueDate:due||null})});
     if(d.success){inp.value="";document.getElementById("dueDateInp").value="";showAddPop(title);playAdd();addXP(5);fetchTodos();}else showToast(d.message||"Failed","err");
   }catch{showToast("Server error","err");}finally{btn.disabled=false;}
 }
