@@ -30,7 +30,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // ── SERVE FRONTEND ──
-app.use(express.static(path.join(__dirname, "../frontend")));
+app.use(express.static(path.join(__dirname, "public")));
 
 // ── GOOGLE OAUTH ──
 if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
