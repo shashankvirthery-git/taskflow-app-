@@ -1669,17 +1669,60 @@ async function addTodo(){
     btn.disabled = false;
   }
 }
-async function toggleTodo(id,cur,cardEl){
-  if(!cur){
+async function toggleTodo(id, cur, cardEl) {
+  if (!cur) {
     cardEl.classList.add("completing");
-    const chk=cardEl.querySelector(".chk");if(chk){chk.style.transform="scale(1.5)";setTimeout(()=>{chk.style.transform="";},350);}
-    setTimeout(async()=>{
-      try{const r=await fetch(`${API}/${id}`,{method:"PUT",headers:hdrs(),body:JSON.stringify({completed:true})});if(r.status===401){logout();return;}const d=await r.json();
-        if(d.success){showCompletePopup();await fetchTodos();if(allTodos.filter(t=>!t.completed).length===0&&allTodos.length>0)setTimeout(()=>{showOverlay("allDoneOverlay");playAllDone();launchConfetti(window.innerWidth/2,window.innerHeight/4);},700);}
-      }catch{showToast("Error","err");}
-    },400);
-  }else{
-    try{const r=await fetch(`${API}/${id}`,{method:"PUT",headers:hdrs(),body:JSON.stringify({completed:false})});if(r.status===401){logout();return;}const d=await r.json();if(d.success)fetchTodos();}catch{showToast("Error","err");}
+    const chk = cardEl.querySelector(".chk");
+    if (chk) {
+      chk.style.transform = "scale(1.5)";
+      setTimeout(() => { chk.style.transform = ""; }, 350);
+    }
+
+    setTimeout(async () => {
+      try {
+        const r = await fetch(`/tasks/${id}`, {
+          method: "PUT",
+          headers: hdrs(),
+          body: JSON.stringify({ completed: true })
+        });
+
+        if (r.status === 401) { logout(); return; }
+
+        const d = await r.json();
+
+        if (d.success) {
+          showCompletePopup();
+          await fetchTodos();
+
+          if (allTodos.filter(t => !t.completed).length === 0 && allTodos.length > 0) {
+            setTimeout(() => {
+              showOverlay("allDoneOverlay");
+              playAllDone();
+              launchConfetti(window.innerWidth / 2, window.innerHeight / 4);
+            }, 700);
+          }
+        }
+      } catch {
+        showToast("Error", "err");
+      }
+    }, 400);
+
+  } else {
+    try {
+      const r = await fetch(`/tasks/${id}`, {
+        method: "PUT",
+        headers: hdrs(),
+        body: JSON.stringify({ completed: false })
+      });
+
+      if (r.status === 401) { logout(); return; }
+
+      const d = await r.json();
+      if (d.success) fetchTodos();
+
+    } catch {
+      showToast("Error", "err");
+    }
   }
 }
 
