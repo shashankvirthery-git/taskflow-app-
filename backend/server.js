@@ -76,6 +76,10 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
 app.use("/api/auth", authRoutes);
 app.use("/api/todos", todoRoutes);
 
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "login.html"));
+});
+
 // ── CONNECT & START ──
 const PORT = process.env.PORT || 5000;
 mongoose.connect(process.env.MONGO_URI)
