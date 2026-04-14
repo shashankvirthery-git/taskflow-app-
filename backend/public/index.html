@@ -1584,14 +1584,35 @@ function updatePomUI(){
 
 // ── Analytics chart ──
 async function loadAnalytics(){
-  try{const r=await fetch(API+"/analytics/weekly",{headers:hdrs()});if(r.status===401){logout();return;}const d=await r.json();if(!d.success)return;
-    const days=d.data,max=Math.max(...days.map(d=>d.count),1),total=days.reduce((s,d)=>s+d.count,0);
-    const avg=Math.round(total/days.length*10)/10;
-    const bestDay=days.reduce((best,d)=>d.count>best.count?d:best,days[0]);
-    document.getElementById("anScore").textContent=`${total} this week`;
-    document.getElementById("insightBest").textContent=bestDay.day;document.getElementById("insightAvg").textContent=avg;document.getElementById("insightTotal").textContent=total;
-    document.getElementById("weekChart").innerHTML=days.map(day=>`<div class="bar-wrap"><div class="bar-cnt">${day.count||""}</div><div class="bar" style="height:${Math.max((day.count/max)*60,3)}px;background:linear-gradient(to top,var(--teal),var(--accent))"></div><div class="bar-lbl">${day.day}</div></div>`).join("");
-  }catch(e){}
+  try{
+    const r = await fetch(API + "/analytics/weekly", { headers: hdrs() });
+    if(r.status === 401){ logout(); return; }
+
+    const d = await r.json();
+    if(!d.success) return;
+
+    const a = d.data;
+
+    document.getElementById("anScore").textContent = `${a.tasksDone} this week`;
+    document.getElementById("insightBest").textContent = "Peak Day";
+    document.getElementById("insightAvg").textContent = Math.round(a.onSchedule);
+    document.getElementById("insightTotal").textContent = a.tasksDone;
+
+    const max = Math.max(...a.weekly, 1);
+
+    document.getElementById("weekChart").innerHTML =
+      a.weekly.map((val, i) => `
+        <div class="bar-wrap">
+          <div class="bar-cnt">${val}</div>
+          <div class="bar" style="height:${Math.max((val/max)*60,3)}px;
+            background:linear-gradient(to top,var(--teal),var(--accent))"></div>
+          <div class="bar-lbl">D${i+1}</div>
+        </div>
+      `).join("");
+
+  }catch(e){
+    console.log("Analytics error", e);
+  }
 }
 
 // ── Challenge ──
