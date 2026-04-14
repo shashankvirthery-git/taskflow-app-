@@ -15,7 +15,7 @@ const User = require("./models/User");
 
 const todoRoutes = require("./routes/todoRoutes");
 const authRoutes = require("./routes/authRoutes");
-
+const analyticsRoutes = require("./routes/analytics");
 const app = express();
 
 // ── MIDDLEWARE ──
@@ -31,7 +31,8 @@ app.use(passport.session());
 
 // ── SERVE FRONTEND ──
 app.use(express.static(path.join(__dirname, "public")));
-
+// 🔥 analytics route connected
+app.use("/api/analytics", analyticsRoutes);
 // ── GOOGLE OAUTH ──
 if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
   passport.use(new GoogleStrategy({
